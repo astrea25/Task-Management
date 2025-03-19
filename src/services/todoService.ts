@@ -72,9 +72,6 @@ export const getTodos = async (userId: string) => {
   } catch (error: any) {
     if (error.code === "failed-precondition" && error.message.includes("index")) {
       console.warn("Index not created yet, using fallback query without ordering");
-      toast("Optimized queries require a Firestore index. Check the console for details.", {
-        description: "Using a simplified query for now."
-      });
       
       const simpleQuery = query(
         todoCollection,
