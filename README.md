@@ -45,7 +45,7 @@ A modern and efficient task management application built with React and Vite, he
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/astrea25/To-Do-List-System.git
+git clone https://github.com/astrea25/Task-Management.git
 ```
 
 2. Install dependencies:
