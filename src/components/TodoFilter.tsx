@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 
 export type FilterOption = "all" | "active" | "completed";
-export type SortOption = "newest" | "oldest" | "priority" | "alphabetical";
+export type SortOption = "newest" | "oldest" | "priority" | "alphabetical" | "dueDate";
 
 interface TodoFilterProps {
   filter: FilterOption;
@@ -87,6 +87,7 @@ const TodoFilter: React.FC<TodoFilterProps> = ({
             <SelectItem value="oldest">Oldest</SelectItem>
             <SelectItem value="priority">Priority</SelectItem>
             <SelectItem value="alphabetical">Alphabetical</SelectItem>
+            <SelectItem value="dueDate">Due Date</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -22,11 +22,13 @@ export interface Todo {
   userId: string;
   createdAt: Timestamp;
   priority: "low" | "medium" | "high";
+  dueDate?: Timestamp | null;
 }
 
 export interface NewTodo {
   text: string;
   priority: "low" | "medium" | "high";
+  dueDate?: Date | null;
 }
 
 export const addTodo = async (userId: string, newTodo: NewTodo) => {
@@ -37,6 +39,7 @@ export const addTodo = async (userId: string, newTodo: NewTodo) => {
     userId,
     createdAt: serverTimestamp(),
     priority: newTodo.priority,
+    dueDate: newTodo.dueDate ? Timestamp.fromDate(newTodo.dueDate) : null,
   };
   
   const docRef = await addDoc(todoCollection, todoData);
@@ -47,7 +50,6 @@ export const getTodos = async (userId: string) => {
   const todoCollection = collection(db, "todos");
   
   try {
-    // Try the complex query first with both filter and sorting
     const todoQuery = query(
       todoCollection,
       where("userId", "==", userId),
@@ -64,17 +66,16 @@ export const getTodos = async (userId: string) => {
         userId: data.userId,
         createdAt: data.createdAt,
         priority: data.priority,
+        dueDate: data.dueDate || null,
       } as Todo;
     });
   } catch (error: any) {
-    // Check if it's an index error
     if (error.code === "failed-precondition" && error.message.includes("index")) {
       console.warn("Index not created yet, using fallback query without ordering");
       toast("Optimized queries require a Firestore index. Check the console for details.", {
         description: "Using a simplified query for now."
       });
       
-      // Fall back to a simple query without ordering
       const simpleQuery = query(
         todoCollection,
         where("userId", "==", userId)
@@ -90,19 +91,17 @@ export const getTodos = async (userId: string) => {
           userId: data.userId,
           createdAt: data.createdAt,
           priority: data.priority,
+          dueDate: data.dueDate || null,
         } as Todo;
       });
       
-      // Sort in memory instead (not as efficient but works without the index)
       return todos.sort((a, b) => {
-        // Handle cases where createdAt might be null or undefined
         const timeA = a.createdAt?.toMillis?.() || 0;
         const timeB = b.createdAt?.toMillis?.() || 0;
-        return timeB - timeA; // descending order
+        return timeB - timeA;
       });
     }
     
-    // Re-throw other errors
     throw error;
   }
 };
@@ -122,8 +121,14 @@ export const updateTodoPriority = async (todoId: string, priority: "low" | "medi
   await updateDoc(todoDoc, { priority });
 };
 
+export const updateTodoDueDate = async (todoId: string, dueDate: Date | null) => {
+  const todoDoc = doc(db, "todos", todoId);
+  await updateDoc(todoDoc, { 
+    dueDate: dueDate ? Timestamp.fromDate(dueDate) : null 
+  });
+};
+
 export const deleteTodo = async (todoId: string) => {
   const todoDoc = doc(db, "todos", todoId);
   await deleteDoc(todoDoc);
 };
-

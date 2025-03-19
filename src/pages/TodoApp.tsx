@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -63,6 +64,12 @@ const TodoApp = () => {
         return priorityOrder[a.priority] - priorityOrder[b.priority];
       } else if (sort === "alphabetical") {
         return a.text.localeCompare(b.text);
+      } else if (sort === "dueDate") {
+        // Sort by due date, null dates at the end
+        if (!a.dueDate && !b.dueDate) return 0;
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return a.dueDate.toMillis() - b.dueDate.toMillis();
       }
       return 0;
     });

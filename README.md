@@ -16,6 +16,13 @@ A modern and efficient task management application built with React and Vite, he
 - Sort tasks by priority
 - Quick priority updates
 
+### Due Date
+- Set specific due dates for tasks
+- Receive reminders for upcoming deadlines
+- Sort tasks by due date
+- Visual indicators for overdue tasks
+- Calendar view for deadline management
+
 ### Progress Monitoring
 - Visual progress bars for task completion
 - Daily and weekly progress tracking
